@@ -16,6 +16,7 @@ char mazeArr[mazeSize][mazeSize] = {{0}};
 //Functions
 void makeFileToArray(std::ifstream& filename);
 void showMaze();
+void showMazeNoNumbers();
 
 int main() {
     // Read the file
@@ -49,6 +50,7 @@ int main() {
         cout << "\n";
     }*/
     showMaze();
+    //showMazeNoNumbers();
 
     mazeFile.close();
     return 0;
@@ -80,15 +82,25 @@ void showMaze() {
             for(int a = 0; a < mazeSize; a++) {
                 cout << a;
             }
-        } else {
-            // ERROR HERE
-            // TODO: show the first array
-            for(int j = 0; j < mazeSize; j++) {
-                if(j % 10 == 0) {
-                    cout << i << " ";
-                } 
-                cout << mazeArr[j][i];
-            }
+            cout << "\n";
+        }
+        // ERROR HERE
+        // TODO: show the first array
+        for(int j = 0; j < mazeSize; j++) {
+            if((j % 10 == 0) || (j == 0)) {
+                cout << i << " ";
+            } 
+            cout << mazeArr[j][i];
+        }
+        
+        cout << "\n";
+    }
+}
+
+void showMazeNoNumbers() {
+    for(int i = 0; i < mazeSize; i++) {
+        for(int j = 0; j < mazeSize; j++) {
+            cout << mazeArr[j][i];
         }
         cout << "\n";
     }
