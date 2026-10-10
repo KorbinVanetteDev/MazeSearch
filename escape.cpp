@@ -92,6 +92,7 @@ void showMaze() {
 
 
 // right now just make bgcolor blue on selected row, col
+// PROBLEM TODO: fix the chart showing up twice.
 void updateShowMaze(int selectedRow, int selectedCol) {
     //conio::clrscr();
     cout << "\033[2J\033[H";
@@ -108,6 +109,30 @@ void updateShowMaze(int selectedRow, int selectedCol) {
                 cout << i << " ";
             }
             if((i == selectedRow) && (j == selectedCol)) {
+                // Handle if it is a tag
+                if(mazeArr[j][i] == '#') {
+                    // conio::clrscr();
+                    cout << "\033[2J\033[H";
+                    updateShowMaze(mazeSize + 1, mazeSize + 1);
+                    char input;
+                    cout << "The starting point you slected is a wall, do you want to select a new Starting point (y/n): ";
+                    cin >> input;
+                    if((input == 'y') || (input == 'Y')) {
+                        //conio::clrscr();
+                        cout << "\033[2J\033[H";
+                        updateShowMaze(mazeSize + 1, mazeSize + 1);
+
+                        int sRow;
+                        int sCol;
+
+                        cout << "Please enter the starting point (Row Col): ";
+                        cin >> sRow;
+                        cin >> sCol;
+                        //Reccursion without a base case!??
+                        updateShowMaze(sRow, sCol);
+                    }
+                    
+                }
                 cout << conio::bgColor(conio::BLUE);
                 cout << mazeArr[j][i];
                 cout << conio::resetAll();
