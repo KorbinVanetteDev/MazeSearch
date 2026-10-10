@@ -67,7 +67,7 @@ void makeFileToArray(std::ifstream& filename) {
     }
 }
 
-// TODO: Make this have an update color too (make true or false and certain index to change color)
+// DO NOT USE THIS FUNCTION, USE IT FOR REFERENCE ONLY
 void showMaze() {
     //conio::clrscr();
     cout << "\033[2J\033[H";
@@ -90,9 +90,7 @@ void showMaze() {
     }
 }
 
-
-// right now just make bgcolor blue on selected row, col
-// PROBLEM TODO: fix the chart showing up twice.
+// DO NOT USE THIS FUNCTION, USE IT FOR REFERENCE ONLY
 void updateShowMaze(int selectedRow, int selectedCol, bool reccursive) {
     //bool reccursive = false;
     //conio::clrscr();
@@ -162,6 +160,10 @@ void updateShowMaze(int selectedRow, int selectedCol, bool reccursive) {
         cout << "\n";
     }
 }
+
+
+
+
 
 // Mergind the 2 methods above
 void showMazeAll() {
@@ -270,11 +272,4 @@ void handleUserInput() {
         }
 
     }
-
-
-
-
-
-
-
 }
