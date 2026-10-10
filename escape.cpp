@@ -13,10 +13,11 @@ using std::cerr;
 const int mazeSize = 10;
 char mazeArr[mazeSize][mazeSize] = {{0}};
 
+
 //Functions
 void makeFileToArray(std::ifstream& filename);
 void showMaze();
-void showMazeNoNumbers();
+void updateShowMaze(int selectedRow, int selectedCol);
 
 int main() {
     // Read the file
@@ -32,25 +33,17 @@ int main() {
     makeFileToArray(mazeFile);
 
     // Show the array
-    /*
-    for(int i = 0; i < mazeSize; i++) {
-        if(i == 0) {
-            cout << " ";
-            for(int a = 0; a < mazeSize; a++) {
-                cout << a;
-            }
-        } else {
-            for(int j = 0; j < mazeSize; j++) {
-                if(j==0) {
-                    cout << " ";
-                }
-                cout <<  mazeArr[j][i];
-            }
-        }
-        cout << "\n";
-    }*/
     showMaze();
-    //showMazeNoNumbers();
+
+    //Start of input for Row and Col
+    int sRow;
+    int sCol;
+    cout << "Please enter the starting point (Row Col): ";
+    cin >> sRow;
+    cin >> sCol;
+    updateShowMaze(sRow, sCol);
+
+
 
     mazeFile.close();
     return 0;
@@ -74,8 +67,10 @@ void makeFileToArray(std::ifstream& filename) {
     }
 }
 
+// TODO: Make this have an update color too (make true or false and certain index to change color)
 void showMaze() {
     //conio::clrscr();
+    cout << "\033[2J\033[H";
     for(int i = 0; i < mazeSize; i++) {
         if(i == 0) {
             cout << "  ";
@@ -84,8 +79,6 @@ void showMaze() {
             }
             cout << "\n";
         }
-        // ERROR HERE
-        // TODO: show the first array
         for(int j = 0; j < mazeSize; j++) {
             if((j % 10 == 0) || (j == 0)) {
                 cout << i << " ";
@@ -97,10 +90,31 @@ void showMaze() {
     }
 }
 
-void showMazeNoNumbers() {
+
+// right now just make bgcolor blue on selected row, col
+void updateShowMaze(int selectedRow, int selectedCol) {
+    //conio::clrscr();
+    cout << "\033[2J\033[H";
     for(int i = 0; i < mazeSize; i++) {
+        if(i == 0) {
+            cout << "  ";
+            for(int a = 0; a < mazeSize; a++) {
+                cout << a;
+            }
+            cout << "\n";
+        }
         for(int j = 0; j < mazeSize; j++) {
-            cout << mazeArr[j][i];
+            if((j % 10 == 0) || (j == 0)) {
+                cout << i << " ";
+            }
+            if((i == selectedRow) && (j == selectedCol)) {
+                cout << conio::bgColor(conio::BLUE);
+                cout << mazeArr[j][i];
+                cout << conio::resetAll();
+            } else {
+                cout << mazeArr[j][i];
+            }
+
         }
         cout << "\n";
     }
