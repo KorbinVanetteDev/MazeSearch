@@ -18,6 +18,10 @@ char mazeArr[mazeSize][mazeSize] = {{0}};
 void makeFileToArray(std::ifstream& filename);
 void showMaze();
 void updateShowMaze(int selectedRow, int selectedCol, bool reccursive = false);
+bool isValidStart(int row, int col);
+void showMazeAll();
+void showMazeAll(int selectedRow, int selectedCol); 
+void handleUserInput();
 
 int main() {
     // Read the file
@@ -33,15 +37,11 @@ int main() {
     makeFileToArray(mazeFile);
 
     // Show the array
-    showMaze();
+    showMazeAll();
 
-    //Start of input for Row and Col
-    int sRow;
-    int sCol;
-    cout << "Please enter the starting point (Row Col): ";
-    cin >> sRow;
-    cin >> sCol;
-    updateShowMaze(sRow, sCol, false);
+    //Start of input for Row and Col (MOVE TO handleUserInput())
+    handleUserInput();
+
 
 
 
@@ -98,7 +98,7 @@ void updateShowMaze(int selectedRow, int selectedCol, bool reccursive) {
     //conio::clrscr();
     cout << "\033[2J\033[H";
     for(int i = 0; i < mazeSize; i++) {
-        if((i == 0) && (!reccursive))  {
+        if(i == 0)  {
             cout << "  ";
             for(int a = 0; a < mazeSize; a++) {
                 cout << a;
@@ -109,7 +109,7 @@ void updateShowMaze(int selectedRow, int selectedCol, bool reccursive) {
             if(((j % 10 == 0) || (j == 0)) && (!reccursive))  {
                 cout << i << " ";
             }
-            if((i == selectedRow) && (j == selectedCol)) {
+            if((i == selectedRow) && (j == selectedCol) && (!reccursive)) {
                 // Handle if it is a tag
                 if(mazeArr[j][i] == '#') {
                     // conio::clrscr();
@@ -135,8 +135,9 @@ void updateShowMaze(int selectedRow, int selectedCol, bool reccursive) {
                         // if 0 == selectedRow WHICH IS TRUE and 0 == selectedCol WHICH IS ALSO TRUE if return true
                         // if mazeArr[j][i] == '#' WHICH IS DOES if return true
                         // clear screen, updateShowMaze(11, 11)
-                        // INTO UPDATE SHOW MAZE:
-                        // reccursive = 
+                        // INTO UPDATE SHOW MAZE (1st):
+                        // reccursive = false
+                        //
 
                         int sRow;
                         int sCol;
@@ -160,4 +161,120 @@ void updateShowMaze(int selectedRow, int selectedCol, bool reccursive) {
         }
         cout << "\n";
     }
+}
+
+// Mergind the 2 methods above
+void showMazeAll() {
+    // Clear Screen
+    //cout << conio::clrscr();
+    cout << "\033[2J\033[H";
+    for(int i = 0; i < mazeSize; i++) {
+        // Print out top numbers
+        if(i == 0) {
+            cout << "  ";
+
+            for(int a = 0; a < mazeSize; a++) {
+                cout << a;
+            }
+
+            cout << "\n";
+        }
+
+        for(int j = 0; j < mazeSize; j++) {
+            // Print out top numbers
+            if((j % 10 == 0) || (j == 0)) {
+                cout << i << " ";
+            } 
+            cout << mazeArr[j][i];
+        }
+        
+        cout << "\n";
+    }
+}
+
+// Handle the validness outside of the loop first.
+void showMazeAll(int selectedRow, int selectedCol) {
+    cout << "\033[2J\033[H";
+
+    for(int i = 0; i < mazeSize; i++) {
+        if(i == 0) {
+            cout << "  ";
+
+            for(int a = 0; a < mazeSize; a++) {
+                cout << a;
+            }
+
+            cout << "\n";
+        }
+
+        for(int j = 0; j < mazeSize; j++) {
+            if((j % 10 == 0) || (j == 0)) {
+                cout << i << " ";
+            }
+            
+            //Selected Row and Col coloring
+            if((i == selectedRow) && (j == selectedCol)) {
+                cout << conio::bgColor(conio::BLUE);
+                cout << mazeArr[j][i];
+                cout << conio::resetAll();
+            } else {
+                cout << mazeArr[j][i];
+            }
+        }
+
+        cout << "\n";
+    }
+}
+
+// Maybe this will help ignore all above for now.
+// RETURN false IF VALUE IS #
+// RETURN true IF VALUE IS .
+bool isValidStart(int row, int col) {
+    char value = mazeArr[row][col];
+    if(value == '#') {
+        return false;
+    } else if(value == '.') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Handle the Row Col input
+void handleUserInput() {
+    int sRow;
+    int sCol;
+
+    cout << "Please enter the starting point (Row Col): ";
+    cin >> sRow;
+    cin >> sCol;
+
+    if(isValidStart(sRow, sCol)) {
+        // Show the updated Maze
+        showMazeAll(sRow, sCol);
+    } else {
+        // Get input for y/n
+        char input;
+
+        //cout << conio::clrscr();
+        cout << "\033[2J\033[H";
+        // Show maze for consistency
+        showMazeAll();
+        cout << "The starting point you slected is a wall, do you want to select a new Starting point (y/n): ";
+        cin >> input;
+        // User types y
+        if((input == 'y') || (input == 'Y')) {
+            cout << "\033[2J\033[H";
+            showMazeAll();
+            handleUserInput();
+        }
+
+    }
+
+
+
+
+
+
+
 }
