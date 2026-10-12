@@ -266,7 +266,7 @@ void showMazeAll(int selectedRow, int selectedCol, bool isStarted) {
             }
             
             if(isStarted) {
-                if(((i == selectedRow) && (j == selectedCol)) || (path[selectedRow][selectedCol] == mazeArr[selectedRow][selectedCol])) {
+                if(((i == selectedRow) && (j == selectedCol)) || (isInPath(i, j))) {
                     cout << conio::bgColor(conio::BLUE);
                     cout << mazeArr[j][i];
                     cout << conio::resetAll();
@@ -342,6 +342,8 @@ void solveMaze(int startingRow, int startingCol) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
     move(startingRow, startingCol);
+
+
 }
 // Method to check where walls are
 // Return where you CAN move (All points stuctured { {row, col}, {row2, col2} } -> can move to pos row, col and row2, col2) 
