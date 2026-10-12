@@ -30,6 +30,8 @@ void handleUserInput();
 std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int currentArrPosCol);
 bool canMove(int posRow, int posCol);
 void solveMaze(int startingRow, int startingCol); 
+bool isInPath(int row, int col);
+void move(int currentRow, int currentCol);
 
 int main() {
     // Read the file
@@ -306,8 +308,8 @@ void handleUserInput() {
 
     if(isValidStart(sRow, sCol)) {
         // Show the updated Maze
-        showMazeAll(sRow, sCol);
-        //solveMaze(sRow, sCol);
+        //showMazeAll(sRow, sCol);
+        solveMaze(sRow, sCol);
     } else {
         // Get input for y/n
         char input;
@@ -334,7 +336,8 @@ void handleUserInput() {
 // TODO: Write the Method to solve the maze
 void solveMaze(int startingRow, int startingCol) {
     showMazeAll(startingRow, startingCol);
-
+    
+    move(startingRow, startingCol);
 }
 // Method to check where walls are
 // Return where you CAN move (All points stuctured { {row, col}, {row2, col2} } -> can move to pos row, col and row2, col2) 
@@ -459,12 +462,56 @@ void moveBack(int positionRow, int positionCol) {
 
 //TODO: Make a move function
 void move(int currentRow, int currentCol) {
-    std::vector<std::vector<int>> allPointsRelative = checkWallPosition(currentRow, currentCol);
-    std::vector<std::vector<int>> movePoints;
+    std::vector<std::vector<int>> movePoints = checkWallPosition(currentRow, currentCol);
 
 
     // Go through to filter out the points
-    
+    for(int i = 0; i < movePoints.size(); i++){
+        bool notValid = false;
+        
+        for(int j : movePoints[i]) {
+            if(j < 0) {
+                notValid = true;
+                break;
+            }
+        }
+
+        if(notValid) {
+            movePoints.erase(movePoints.begin() + i);
+            i--;
+        }
+    } 
 
     // Check to see if a point is already in path
+    for(int i = 0; i < movePoints.size(); i++) {
+        for(int j = 0; j < path.size(); j++) {
+            if((path[j][0] == movePoints[i][0]) && (path[j][1] == movePoints[i][1])) {
+                movePoints.erase(movePoints.begin() + i);
+                i--;
+                break;
+            }
+        }
+    }
+    
+    if(movePoints.empty()) {
+        cout << "Handle if there is none" << endl;
+    } else {
+        showMazeAll(movePoints[0][0], movePoints[0][1], true);
+    }
+
+    
+}
+
+//Function to see if there is a number in the path
+// return true if there is a number in path
+// MAY NOT NEED CHECK WHEN COMPLETED
+bool isInPath(int row, int col) {
+    if(path.empty()) return false;
+    for(int i = 0; i < path.size(); i++) {
+        if((path[i][0] == row) && (path[i][1] == col)) {
+            return true;
+        }
+    }
+
+    return false;
 }
