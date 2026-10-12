@@ -277,6 +277,8 @@ void showMazeAll(int selectedRow, int selectedCol, bool isStarted) {
                 showMazeAll();
             }
         }
+
+        cout << "\n";
     }
 }
 
@@ -336,7 +338,9 @@ void handleUserInput() {
 // TODO: Write the Method to solve the maze
 void solveMaze(int startingRow, int startingCol) {
     showMazeAll(startingRow, startingCol);
-    
+   
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
     move(startingRow, startingCol);
 }
 // Method to check where walls are
@@ -349,18 +353,16 @@ std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int curren
     // TODO: TEST THIS
     // 
     std::vector<std::vector<int>> validSpaces;
-    int validSpots = 0;
     // Check the space above
     // Position: currentArrPosRow + 1
-    if(mazeArr[currentArrPosRow + 1][currentArrPosCol] == '.') {
+    if((currentArrPosRow > 0) && (mazeArr[currentArrPosCol][currentArrPosRow - 1] == '.')) {
         std::vector<int> up;
     
-        up.push_back(currentArrPosRow + 1);
+        up.push_back(currentArrPosRow - 1);
         up.push_back(currentArrPosCol);
 
         validSpaces.push_back(up);
 
-        validSpots++;
     } else {
         std::vector<int> up;
 
@@ -372,7 +374,7 @@ std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int curren
 
     // Check space to Right
     // Position: currentArrPosCol + 1
-    if(mazeArr[currentArrPosRow][currentArrPosCol + 1] == '.') {
+    if((currentArrPosCol < mazeSize -1) && (mazeArr[currentArrPosCol + 1][currentArrPosRow] == '.')) {
         std::vector<int> right;
 
         right.push_back(currentArrPosRow);
@@ -380,7 +382,6 @@ std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int curren
 
         validSpaces.push_back(right);
 
-        validSpots++;
     } else {
         std::vector<int> right;
 
@@ -392,15 +393,14 @@ std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int curren
 
     // Check space below
     // Position: currentArrPosRow - 1
-    if(mazeArr[currentArrPosRow - 1][currentArrPosCol] == '.') {
+    if((currentArrPosRow < mazeSize - 1) && (mazeArr[currentArrPosCol][currentArrPosRow + 1] == '.')) {
         std::vector<int> down;
 
-        down.push_back(currentArrPosRow - 1);
+        down.push_back(currentArrPosRow + 1);
         down.push_back(currentArrPosCol);
 
         validSpaces.push_back(down);
 
-        validSpots++;
     } else {
         std::vector<int> down;
 
@@ -412,14 +412,14 @@ std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int curren
 
     // Check space to Lefy
     // Position: currentArrPosCol - 1
-    if(mazeArr[currentArrPosRow][currentArrPosCol - 1] == '.') {
+    if((currentArrPosCol > 0) && (mazeArr[currentArrPosCol - 1][currentArrPosRow] == '.')) {
         std::vector<int> left;
 
         left.push_back(currentArrPosRow);
         left.push_back(currentArrPosCol - 1);
 
         validSpaces.push_back(left);
-        validSpots++;
+
     } else {
         std::vector<int> left;
 
@@ -428,15 +428,8 @@ std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int curren
 
         validSpaces.push_back(left);
     }
-
-    // TODO: Return another nu
-    if(validSpots > 2) {
-        return validSpaces;
-    } else if(validSpots == 1) {
-        return {{-4}};
-    } else {
-        return {{-5}};
-    }
+    
+    return validSpaces;
 }
 
 // Checks to see if you can move
@@ -496,6 +489,7 @@ void move(int currentRow, int currentCol) {
     if(movePoints.empty()) {
         cout << "Handle if there is none" << endl;
     } else {
+        
         showMazeAll(movePoints[0][0], movePoints[0][1], true);
     }
 
