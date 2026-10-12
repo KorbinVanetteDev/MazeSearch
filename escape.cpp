@@ -26,6 +26,8 @@ bool isValidStart(int row, int col);
 void showMazeAll();
 void showMazeAll(int selectedRow, int selectedCol); 
 void handleUserInput();
+std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int currentArrPosCol);
+
 
 int main() {
     // Read the file
@@ -295,14 +297,15 @@ void handleUserInput() {
 // return {{UpRow, upCol}, {rightRol, rightCol}, {downRow, downCol}, {leftRow, leftCol}};
 // return {{-1, -1}} if it cant be moved.
 // TODO: Make a function where you check to see if it is moving back
-// TODO: write a method to see if you can move
 std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int currentArrPosCol) {
     std::vector<std::vector<int>> validSpaces;
+    int validSpots = 0;
     // Check the space above
     // Position: currentArrPosRow + 1
     if(mazeArr[currentArrPosRow + 1][currentArrPosCol] == '.') {
         validSpaces[0].push_back(currentArrPosRow + 1);
         validSpaces[0].push_back(currentArrPosCol);
+        validSpots++;
     } else {
         validSpaces[0].push_back(-1);
         validSpaces[0].push_back(-1);
@@ -313,6 +316,7 @@ std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int curren
     if(mazeArr[currentArrPosRow][currentArrPosCol + 1] == '.') {
         validSpaces[1].push_back(currentArrPosRow);
         validSpaces[1].push_back(currentArrPosCol + 1);
+        validSpots++;
     } else {
         validSpaces[1].push_back(-1);
         validSpaces[1].push_back(-1);
@@ -323,6 +327,7 @@ std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int curren
     if(mazeArr[currentArrPosRow - 1][currentArrPosCol] == '.') {
         validSpaces[2].push_back(currentArrPosRow - 1);
         validSpaces[2].push_back(currentArrPosCol);
+        validSpots++;
     } else {
         validSpaces[2].push_back(-1);
         validSpaces[2].push_back(-1);
@@ -333,12 +338,29 @@ std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int curren
     if(mazeArr[currentArrPosRow][currentArrPosCol - 1] == '.') {
         validSpaces[3].push_back(currentArrPosRow);
         validSpaces[3].push_back(currentArrPosCol - 1);
+        validSpots++;
     } else {
         validSpaces[3].push_back(-1);
         validSpaces[3].push_back(-1);
     }
 
-    return validSpaces;
+    // TODO: Return another nu
+    if(validSpots > 2) {
+        return validSpaces;
+    } else if(validSpots == 0) {
+        return {{-4}};
+    } else {
+        return {{-5}};
+    }
 }
 
-
+// Checks to see if you can move
+bool canMove(int posRow, int posCol) {
+    std::vector<std::vector<int>> positions = checkWallPosition(posRow, posCol);
+    
+    if(positions[0][0] != -5) {
+        return true;
+    } else {
+        return false;
+    }
+}
