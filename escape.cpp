@@ -16,7 +16,8 @@ using std::cerr;
 const int mazeSize = 10;
 char mazeArr[mazeSize][mazeSize] = {{0}};
 bool isStarted = false;
-
+std::vector<std::vector<int>> path;
+int pathNum = 0;
 
 //Functions
 void makeFileToArray(std::ifstream& filename);
@@ -27,7 +28,8 @@ void showMazeAll();
 void showMazeAll(int selectedRow, int selectedCol); 
 void handleUserInput();
 std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int currentArrPosCol);
-
+bool canMove(int posRow, int posCol);
+void solveMaze(int startingRow, int startingCol); 
 
 int main() {
     // Read the file
@@ -193,6 +195,7 @@ void showMazeAll() {
             if((j % 10 == 0) || (j == 0)) {
                 cout << i << " ";
             } 
+            
             cout << mazeArr[j][i];
         }
         
@@ -223,6 +226,11 @@ void showMazeAll(int selectedRow, int selectedCol) {
             
             //Selected Row and Col coloring
             if((i == selectedRow) && (j == selectedCol)) {
+                std::vector<int> row;
+                row.push_back(i);
+                row.push_back(j);
+                path.push_back(row);
+                pathNum++;
                 cout << conio::bgColor(conio::BLUE);
                 cout << mazeArr[j][i];
                 cout << conio::resetAll();
@@ -236,7 +244,39 @@ void showMazeAll(int selectedRow, int selectedCol) {
 }
 
 //TODO Create a method to showMaze updating if there is already using the variable isStarted
+void showMazeAll(int selectedRow, int selectedCol, bool isStarted) {
+    cout << "\033[2J\033[H";
 
+    for(int i = 0; i < mazeSize; i++) {
+        if(i == 0) {
+            cout << "  ";
+
+            for(int a = 0; a < mazeSize; a++) {
+                cout << a;
+            }
+
+            cout << "\n";
+        }
+
+        for(int j = 0; j < mazeSize; j++) {
+            if((j % 10 == 0) || (j == 0)) {
+                cout << i << " ";
+            }
+            
+            if(isStarted) {
+                if(((i == selectedRow) && (j == selectedCol)) || (path[selectedRow][selectedCol] == mazeArr[selectedRow][selectedCol])) {
+                    cout << conio::bgColor(conio::BLUE);
+                    cout << mazeArr[j][i];
+                    cout << conio::resetAll();
+                } else {
+                    cout << mazeArr[j][i];
+                }
+            } else {
+                showMazeAll();
+            }
+        }
+    }
+}
 
 
 
@@ -267,6 +307,7 @@ void handleUserInput() {
     if(isValidStart(sRow, sCol)) {
         // Show the updated Maze
         showMazeAll(sRow, sCol);
+        //solveMaze(sRow, sCol);
     } else {
         // Get input for y/n
         char input;
@@ -291,63 +332,104 @@ void handleUserInput() {
 // TODO: Write a method to move.
 //
 // TODO: Write the Method to solve the maze
+void solveMaze(int startingRow, int startingCol) {
+    showMazeAll(startingRow, startingCol);
 
+}
 // Method to check where walls are
 // Return where you CAN move (All points stuctured { {row, col}, {row2, col2} } -> can move to pos row, col and row2, col2) 
 // return {{UpRow, upCol}, {rightRol, rightCol}, {downRow, downCol}, {leftRow, leftCol}};
 // return {{-1, -1}} if it cant be moved.
 // TODO: Make a function where you check to see if it is moving back
 std::vector<std::vector<int>> checkWallPosition(int currentArrPosRow, int currentArrPosCol) {
+
+    // TODO: TEST THIS
+    // 
     std::vector<std::vector<int>> validSpaces;
     int validSpots = 0;
     // Check the space above
     // Position: currentArrPosRow + 1
     if(mazeArr[currentArrPosRow + 1][currentArrPosCol] == '.') {
-        validSpaces[0].push_back(currentArrPosRow + 1);
-        validSpaces[0].push_back(currentArrPosCol);
+        std::vector<int> up;
+    
+        up.push_back(currentArrPosRow + 1);
+        up.push_back(currentArrPosCol);
+
+        validSpaces.push_back(up);
+
         validSpots++;
     } else {
-        validSpaces[0].push_back(-1);
-        validSpaces[0].push_back(-1);
+        std::vector<int> up;
+
+        up.push_back(-1);
+        up.push_back(-1);
+
+        validSpaces.push_back(up);
     }
 
     // Check space to Right
     // Position: currentArrPosCol + 1
     if(mazeArr[currentArrPosRow][currentArrPosCol + 1] == '.') {
-        validSpaces[1].push_back(currentArrPosRow);
-        validSpaces[1].push_back(currentArrPosCol + 1);
+        std::vector<int> right;
+
+        right.push_back(currentArrPosRow);
+        right.push_back(currentArrPosCol + 1);
+
+        validSpaces.push_back(right);
+
         validSpots++;
     } else {
-        validSpaces[1].push_back(-1);
-        validSpaces[1].push_back(-1);
+        std::vector<int> right;
+
+        right.push_back(-1);
+        right.push_back(-1);
+
+        validSpaces.push_back(right);
     }
 
     // Check space below
     // Position: currentArrPosRow - 1
     if(mazeArr[currentArrPosRow - 1][currentArrPosCol] == '.') {
-        validSpaces[2].push_back(currentArrPosRow - 1);
-        validSpaces[2].push_back(currentArrPosCol);
+        std::vector<int> down;
+
+        down.push_back(currentArrPosRow - 1);
+        down.push_back(currentArrPosCol);
+
+        validSpaces.push_back(down);
+
         validSpots++;
     } else {
-        validSpaces[2].push_back(-1);
-        validSpaces[2].push_back(-1);
+        std::vector<int> down;
+
+        down.push_back(-1);
+        down.push_back(-1);
+
+        validSpaces.push_back(down);
     }
 
     // Check space to Lefy
     // Position: currentArrPosCol - 1
     if(mazeArr[currentArrPosRow][currentArrPosCol - 1] == '.') {
-        validSpaces[3].push_back(currentArrPosRow);
-        validSpaces[3].push_back(currentArrPosCol - 1);
+        std::vector<int> left;
+
+        left.push_back(currentArrPosRow);
+        left.push_back(currentArrPosCol - 1);
+
+        validSpaces.push_back(left);
         validSpots++;
     } else {
-        validSpaces[3].push_back(-1);
-        validSpaces[3].push_back(-1);
+        std::vector<int> left;
+
+        left.push_back(-1);
+        left.push_back(-1);
+
+        validSpaces.push_back(left);
     }
 
     // TODO: Return another nu
     if(validSpots > 2) {
         return validSpaces;
-    } else if(validSpots == 0) {
+    } else if(validSpots == 1) {
         return {{-4}};
     } else {
         return {{-5}};
@@ -363,4 +445,26 @@ bool canMove(int posRow, int posCol) {
     } else {
         return false;
     }
+}
+
+void moveBack(int positionRow, int positionCol) {
+    std::vector<std::vector<int>> positions = checkWallPosition(positionRow, positionCol);
+    
+    //TODO: handle this
+    // This checks to see if it is moving back
+    if(positions[0][0] == -4) {
+        
+    }
+}
+
+//TODO: Make a move function
+void move(int currentRow, int currentCol) {
+    std::vector<std::vector<int>> allPointsRelative = checkWallPosition(currentRow, currentCol);
+    std::vector<std::vector<int>> movePoints;
+
+
+    // Go through to filter out the points
+    
+
+    // Check to see if a point is already in path
 }
