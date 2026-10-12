@@ -287,7 +287,7 @@ void showMazeAll(int selectedRow, int selectedCol, bool isStarted) {
 // RETURN false IF VALUE IS #
 // RETURN true IF VALUE IS .
 bool isValidStart(int row, int col) {
-    char value = mazeArr[row][col];
+    char value = mazeArr[col][row];
     if(value == '#') {
         return false;
     } else if(value == '.') {
