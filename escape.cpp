@@ -303,7 +303,7 @@ bool move(int currentRow, int currentCol) {
 	path.push_back({currentRow, currentCol});
 
 	showMazeAll(currentRow, currentCol, true);
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
 	if(mazeArr[currentCol][currentRow] == 'E') {
 		return true;
@@ -323,7 +323,7 @@ bool move(int currentRow, int currentCol) {
 
     if(!path.empty()) {
         showMazeAll(path[path.size() - 1][0], path[path.size() - 1][1], true);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(250));
     } else {
         showMazeAll();
     }
